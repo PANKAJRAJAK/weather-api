@@ -1,0 +1,7 @@
+node_modules/
+client/dist/output.css
+.DS_Store
+.env
+npm-debug.log
+yarn-error.log
+coverage/

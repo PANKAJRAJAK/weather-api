@@ -1,0 +1,54 @@
+/* Compatibility fallbacks for appearance and other vendor-prefixed properties */
+
+/* Form element appearance */
+button,
+input,
+optgroup,
+select,
+textarea,
+input[type="button"],
+input[type="reset"],
+input[type="submit"],
+[type=search] {
+  -webkit-appearance: button;
+  -moz-appearance: button;
+  appearance: button;
+}
+
+[type=search] {
+  -webkit-appearance: textfield;
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
+
+::-webkit-search-decoration {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+}
+
+::-webkit-file-upload-button {
+  -webkit-appearance: button;
+  -moz-appearance: button;
+  appearance: button;
+}
+
+/* Animation keyframes */
+@-webkit-keyframes spin {
+  to { -webkit-transform: rotate(360deg); transform: rotate(360deg); }
+}
+@keyframes spin {
+  to { -webkit-transform: rotate(360deg); transform: rotate(360deg); }
+}
+
+.animate-spin {
+  -webkit-animation: spin 1s linear infinite;
+  animation: spin 1s linear infinite;
+}
+
+/* Transform properties */
+[class*="transform"] {
+  -webkit-transform: var(--tw-transform);
+  -moz-transform: var(--tw-transform);
+  transform: var(--tw-transform);
+}

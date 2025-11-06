@@ -1,0 +1,25 @@
+/* stylelint-disable at-rule-no-unknown */
+/* Base Tailwind directives */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Import compatibility fixes */
+@import "./fixes.css";
+
+/* Weather theme styles */
+@layer base {
+  body {
+    background: linear-gradient(135deg, #87ceeb 0%, #b4d9ed 100%);
+    min-height: 100vh;
+  }
+}
+
+@layer components {
+  .weather-card {
+    @apply bg-white/90 backdrop-blur-sm;
+    box-shadow: 0 8px 32px -4px rgba(0, 0, 0, 0.1);
+  }
+}
+
+/* stylelint-enable at-rule-no-unknown */
