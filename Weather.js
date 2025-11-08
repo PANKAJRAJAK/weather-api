@@ -3,7 +3,7 @@ const axios = require("axios");
 
 const app = express();
 const path = require('path');
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 
 // Serve frontend static files from client/dist
 app.use(express.static(path.join(__dirname, 'client', 'dist')));
@@ -227,6 +227,9 @@ app.get("/forecast", async (req, res) => {
 });
 
 if (require.main === module) {
+  app.get("/", (req, res) => {
+  res.send("🌦️ Mausam Weather App is Live on Azure!");
+});
   app.listen(PORT, () => {
     console.log(`Server running at http://localhost:${PORT}`);
   });
