@@ -18,6 +18,12 @@ process.on('uncaughtException', (err) => {
 // Serve frontend static files from client/dist
 app.use(express.static(path.join(__dirname, 'client', 'dist')));
 
+// Basic request logger to capture incoming requests in Azure Log Stream
+app.use((req, res, next) => {
+  console.log(`Incoming request: ${req.method} ${req.url}`);
+  next();
+});
+
 // Serve index.html for root (also allows direct open)
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'client', 'dist', 'index.html'));
@@ -355,4 +361,11 @@ app.get('/forecast/coords', async (req, res) => {
   } catch (err) {
     res.status(500).json({ error: 'Unable to fetch forecast by coordinates', details: err.message });
   }
+});
+
+// Express error-handling middleware (must be after all routes)
+app.use((err, req, res, next) => {
+  console.error('Express error handler caught:', err && err.stack ? err.stack : err);
+  if (res.headersSent) return next(err);
+  res.status(500).send('Internal Server Error');
 });
