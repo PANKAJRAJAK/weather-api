@@ -5,6 +5,16 @@ const app = express();
 const path = require('path');
 const PORT = process.env.PORT || 3000;
 
+// Helpful startup logging for Azure and global error handlers so failures are visible in Log Stream
+console.log('Starting Mausam weather app...');
+process.on('unhandledRejection', (reason, promise) => {
+  console.error('Unhandled Rejection at:', promise, 'reason:', reason && reason.stack ? reason.stack : reason);
+});
+process.on('uncaughtException', (err) => {
+  console.error('Uncaught Exception:', err && err.stack ? err.stack : err);
+  // do not exit immediately; allow Azure to capture logs
+});
+
 // Serve frontend static files from client/dist
 app.use(express.static(path.join(__dirname, 'client', 'dist')));
 
