@@ -14,10 +14,23 @@
             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 15a4 4 0 008 0M7 8V6a4 4 0 118 0v2m-8 0h8" />
             </svg>
-            Weather Forecast
+            Mausam — Weather Project
           </h1>
-          <div class="text-sm text-slate-500">Local demo</div>
+          <div class="text-sm text-slate-500">College project • Author: Pankaj Rajak</div>
         </header>
+
+        <div class="mb-4 p-4 bg-slate-50 rounded text-sm text-slate-700">
+          <strong>About this project</strong>
+          <p class="mt-2">Mausam is a college project demonstrating a simple, real-world weather application built with Node.js and Express for the backend and a minimal Tailwind CSS frontend. It showcases practical features useful for a semester project.</p>
+          <ul class="mt-2 list-disc pl-5 text-sm text-slate-600">
+            <li>Current weather + 5-day forecast (OpenWeatherMap)</li>
+            <li>Geocoding and browser geolocation with IP fallback</li>
+            <li>In-memory caching for API responses</li>
+            <li>Ready to deploy on Azure App Service</li>
+          </ul>
+          <p class="mt-2"><strong>How to run</strong>: clone the repo, run <code>npm install</code> and then <code>npm start</code>. The app listens on the port set by <code>PORT</code> env or 3000 by default.</p>
+          <p class="mt-2"><a href="https://github.com/PANKAJRAJAK/weather-api" target="_blank" class="text-blue-600 underline">View the project on GitHub</a></p>
+        </div>
 
         <div class="mb-4 flex gap-2">
           <input id="cityInput" class="flex-1 border rounded px-3 py-2" placeholder="Enter city (e.g. London)" />
