@@ -57,8 +57,17 @@ async function geocodeLocation(query) {
   if (!query || query.trim().length === 0) {
     throw new Error('City name cannot be empty');
   }
-  const normalized = query.trim().toLowerCase();
-  const cacheKey = `geo:${normalized}`;
+  const normalized = query.trim();
+
+  // Validate query: allow letters, numbers, spaces, comma, period, apostrophe and hyphen
+  // Reject queries containing other special characters (e.g. #, @, $, %)
+  const allowed = /^[A-Za-z0-9\s,.'-]+$/;
+  const hasLetter = /[A-Za-z]/.test(normalized);
+  if (!allowed.test(normalized) || !hasLetter || normalized.length < 2) {
+    // Treat as not found so callers return a 404-like response
+    return null;
+  }
+  const cacheKey = `geo:${normalized.toLowerCase()}`;
   const cached = cacheGet(cacheKey);
   if (cached) return cached;
 
