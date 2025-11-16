@@ -7,6 +7,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const current = document.getElementById('current');
   const btnText = document.getElementById('btnText');
   const btnSpinner = document.getElementById('btnSpinner');
+  const headerTemp = document.getElementById('headerTemp');
+  const headerDesc = document.getElementById('headerDesc');
 
   async function getForecast(city) {
     output.innerHTML = '';
@@ -58,9 +60,13 @@ document.addEventListener('DOMContentLoaded', () => {
           return;
         }
         
+        // update header summary
+        if (headerTemp) headerTemp.textContent = `${Math.round(result.temperature)}°C`;
+        if (headerDesc) headerDesc.textContent = `${result.weather}`;
+
         current.innerHTML = `<div class="p-3 border rounded flex items-center gap-4">
           <div class="flex-1">
-            <div class="font-medium">Current - ${result.city}</div>
+            <div class="font-medium">${result.city}</div>
             <div class="text-sm">Temp: ${result.temperature}°C (feels like ${result.feels_like}°C)</div>
             <div class="text-sm text-slate-600">Humidity: ${result.humidity}%</div>
           </div>
@@ -122,9 +128,11 @@ document.addEventListener('DOMContentLoaded', () => {
       const cjson = await cRes.json();
       if (Array.isArray(cjson) && cjson.length > 0 && !cjson[0].error) {
         const cur = cjson[0];
+        if (headerTemp) headerTemp.textContent = `${Math.round(cur.temperature)}°C`;
+        if (headerDesc) headerDesc.textContent = `${cur.weather}`;
         current.innerHTML = `<div class="p-3 border rounded flex items-center gap-4">
           <div class="flex-1">
-            <div class="font-medium">Current - ${cur.city}</div>
+            <div class="font-medium">${cur.city}</div>
             <div class="text-sm">Temp: ${cur.temperature}°C (feels like ${cur.feels_like}°C)</div>
             <div class="text-sm text-slate-600">Humidity: ${cur.humidity}%</div>
           </div>
