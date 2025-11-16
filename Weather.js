@@ -29,7 +29,8 @@ app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'client', 'dist', 'index.html'));
 });
 
-const API_KEY = "6797e35cf13b8ce7fb1cc047464795cd";
+// Use environment variable for API key in production (Render, Azure, etc.)
+const API_KEY = process.env.OPENWEATHER_API_KEY || "6797e35cf13b8ce7fb1cc047464795cd";
 
 // Simple in-memory TTL cache
 const cacheStore = new Map();
