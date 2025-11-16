@@ -4,7 +4,7 @@ services:
   - type: web
     name: mausam-weather
     env: node
-    region: frankfurt # change region if desired (or remove to use default)
+    region: Singapore # change region if desired (or remove to use default)
     plan: free
     branch: main
     buildCommand: npm ci && npm run tailwind:build || true
