@@ -4,4 +4,11 @@ module.exports = {
     extend: {},
   },
   plugins: [],
+  safelist: [
+    'bg-sunny',
+    'bg-warm', 
+    'bg-mild',
+    'bg-cold',
+    'bg-freezing'
+  ]
 }

@@ -9,6 +9,27 @@ document.addEventListener('DOMContentLoaded', () => {
   const btnSpinner = document.getElementById('btnSpinner');
   const headerTemp = document.getElementById('headerTemp');
   const headerDesc = document.getElementById('headerDesc');
+  const body = document.body;
+  const cloudExtra = document.querySelector('.cloud-extra');
+
+  function setWeatherBackground(temperature) {
+    // Remove all weather background classes
+    body.classList.remove('bg-sunny', 'bg-warm', 'bg-mild', 'bg-cold', 'bg-freezing');
+    cloudExtra.classList.add('hidden');
+
+    if (temperature > 25) {
+      body.classList.add('bg-sunny');
+    } else if (temperature > 15) {
+      body.classList.add('bg-warm');
+    } else if (temperature > 5) {
+      body.classList.add('bg-mild');
+      cloudExtra.classList.remove('hidden');
+    } else if (temperature > -5) {
+      body.classList.add('bg-cold');
+    } else {
+      body.classList.add('bg-freezing');
+    }
+  }
 
   async function getForecast(city) {
     output.innerHTML = '';
@@ -63,6 +84,9 @@ document.addEventListener('DOMContentLoaded', () => {
         // update header summary
         if (headerTemp) headerTemp.textContent = `${Math.round(result.temperature)}°C`;
         if (headerDesc) headerDesc.textContent = `${result.weather}`;
+
+        // Set animated background based on temperature
+        setWeatherBackground(result.temperature);
 
         current.innerHTML = `<div class="p-3 border rounded flex items-center gap-4">
           <div class="flex-1">
@@ -130,6 +154,9 @@ document.addEventListener('DOMContentLoaded', () => {
         const cur = cjson[0];
         if (headerTemp) headerTemp.textContent = `${Math.round(cur.temperature)}°C`;
         if (headerDesc) headerDesc.textContent = `${cur.weather}`;
+        
+        // Set animated background based on temperature
+        setWeatherBackground(cur.temperature);
         current.innerHTML = `<div class="p-3 border rounded flex items-center gap-4">
           <div class="flex-1">
             <div class="font-medium">${cur.city}</div>
