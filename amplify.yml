@@ -1,5 +1,5 @@
 version: 1
-frontend:
+backend:
   phases:
     preBuild:
       commands:
@@ -7,7 +7,6 @@ frontend:
     build:
       commands:
         - npm run tailwind:build
-        - npm run build  # if you have a build script, but here it's not needed since dist is served
   artifacts:
     baseDirectory: /
     files:
