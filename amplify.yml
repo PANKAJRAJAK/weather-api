@@ -1,5 +1,5 @@
 version: 1
-backend:
+frontend:
   phases:
     preBuild:
       commands:
@@ -7,6 +7,21 @@ backend:
     build:
       commands:
         - npm run tailwind:build
+  artifacts:
+    baseDirectory: client/dist
+    files:
+      - '**/*'
+  cache:
+    paths:
+      - node_modules/**/*
+backend:
+  phases:
+    preBuild:
+      commands:
+        - npm ci
+    build:
+      commands:
+        - echo "Backend build complete"
   artifacts:
     baseDirectory: /
     files:
