@@ -5,22 +5,20 @@ const app = express();
 const path = require('path');
 const PORT = process.env.PORT || 3000;
 
-// Helpful startup logging for Azure and global error handlers so failures are visible in Log Stream
+// Global error handlers for better error visibility
 console.log('Starting Mausam weather app...');
 process.on('unhandledRejection', (reason, promise) => {
   console.error('Unhandled Rejection at:', promise, 'reason:', reason && reason.stack ? reason.stack : reason);
-  // Don't exit immediately; allow Azure to capture logs
 });
 process.on('uncaughtException', (err) => {
   console.error('Uncaught Exception:', err && err.stack ? err.stack : err);
-  // Don't exit immediately; allow Azure to capture logs
   process.exit(1);
 });
 
 // Serve frontend static files from client/dist
 app.use(express.static(path.join(__dirname, 'client', 'dist')));
 
-// Basic request logger to capture incoming requests in Azure Log Stream
+// Basic request logger
 app.use((req, res, next) => {
   console.log(`Incoming request: ${req.method} ${req.url}`);
   next();
@@ -31,7 +29,7 @@ app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'client', 'dist', 'index.html'));
 });
 
-// Use environment variable for API key in production (Render, Azure, etc.)
+// Use environment variable for API key in production
 const API_KEY = process.env.OPENWEATHER_API_KEY || "6797e35cf13b8ce7fb1cc047464795cd";
 
 // Simple in-memory TTL cache

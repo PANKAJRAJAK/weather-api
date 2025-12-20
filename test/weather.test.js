@@ -6,6 +6,15 @@ jest.mock('axios');
 
 describe('Weather API smoke tests', () => {
   beforeAll(() => {
+    // Mock geocoding data
+    const geoData = [{
+      name: 'TestCity',
+      lat: 40.7128,
+      lon: -74.0060,
+      country: 'US',
+      state: 'NY'
+    }];
+
     // Mock data for current weather
     const currentData = {
       name: 'TestCity',
@@ -26,6 +35,7 @@ describe('Weather API smoke tests', () => {
     };
 
     axios.get.mockImplementation((url) => {
+      if (url.includes('/geo/1.0/direct')) return Promise.resolve({ data: geoData });
       if (url.includes('/data/2.5/forecast')) return Promise.resolve({ data: forecastData });
       if (url.includes('/data/2.5/weather')) return Promise.resolve({ data: currentData });
       return Promise.reject(new Error('unexpected url'));
@@ -37,7 +47,7 @@ describe('Weather API smoke tests', () => {
     expect(res.status).toBe(200);
     expect(Array.isArray(res.body)).toBe(true);
     const city = res.body[0];
-    expect(city.city).toBe('TestCity');
+    expect(city.city).toBe('TestCity, NY, US'); // Formatted city name from geocoding
     expect(typeof city.wind_speed).toBe('string');
     expect(city.wind_speed).toMatch(/Km\/hr$/);
   });
