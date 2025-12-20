@@ -9,10 +9,12 @@ const PORT = process.env.PORT || 3000;
 console.log('Starting Mausam weather app...');
 process.on('unhandledRejection', (reason, promise) => {
   console.error('Unhandled Rejection at:', promise, 'reason:', reason && reason.stack ? reason.stack : reason);
+  // Don't exit immediately; allow Azure to capture logs
 });
 process.on('uncaughtException', (err) => {
   console.error('Uncaught Exception:', err && err.stack ? err.stack : err);
-  // do not exit immediately; allow Azure to capture logs
+  // Don't exit immediately; allow Azure to capture logs
+  process.exit(1);
 });
 
 // Serve frontend static files from client/dist
@@ -252,17 +254,6 @@ app.get("/forecast", async (req, res) => {
   }
 });
 
-if (require.main === module) {
-  app.get("/", (req, res) => {
-  res.send("🌦️ Mausam Weather App is Live on Azure!");
-});
-  app.listen(PORT, '0.0.0.0', () => {
-    console.log(`Server running at http://0.0.0.0:${PORT}`);
-  });
-}
-
-module.exports = app;
-
 // -------------------- /weather/coords endpoint --------------------
 // Accepts lat & lon query params and returns same structure as /weather for a single location
 app.get('/weather/coords', async (req, res) => {
@@ -379,3 +370,16 @@ app.use((err, req, res, next) => {
   if (res.headersSent) return next(err);
   res.status(500).send('Internal Server Error');
 });
+
+if (require.main === module) {
+  try {
+    app.listen(PORT, '0.0.0.0', () => {
+      console.log(`Server running at http://0.0.0.0:${PORT}`);
+    });
+  } catch (error) {
+    console.error('Failed to start server:', error);
+    process.exit(1);
+  }
+}
+
+module.exports = app;
