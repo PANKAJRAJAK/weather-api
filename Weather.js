@@ -3,7 +3,7 @@ const axios = require("axios");
 
 const app = express();
 const path = require('path');
-const PORT = process.env.PORT || 80;
+const PORT = process.env.PORT || 3000;
 
 // Helpful startup logging for Azure and global error handlers so failures are visible in Log Stream
 console.log('Starting Mausam weather app...');

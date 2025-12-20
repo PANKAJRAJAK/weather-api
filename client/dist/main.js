@@ -32,7 +32,6 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   async function getForecast(city) {
-    console.log('getForecast called with city:', city);
     output.innerHTML = '';
     current.innerHTML = '';
     // show loading
@@ -40,14 +39,10 @@ document.addEventListener('DOMContentLoaded', () => {
     btnText.textContent = 'Loading...';
     btnSpinner.classList.remove('hidden');
     try {
-      console.log('Making fetch request to:', `/forecast?city=${encodeURIComponent(city)}`);
       const fRes = await fetch(`/forecast?city=${encodeURIComponent(city)}`);
-      console.log('Forecast response status:', fRes.status);
       const forecast = await fRes.json();
-      console.log('Forecast response data:', forecast);
 
       if (fRes.status !== 200 || forecast.error) {
-        console.error('Forecast error:', forecast.error);
         output.innerHTML = `<div class="p-3 border rounded bg-red-50 text-red-700">
           <div class="font-medium">Error</div>
           <div class="text-sm">${forecast.error || 'Unable to fetch forecast data'}</div>
@@ -73,11 +68,8 @@ document.addEventListener('DOMContentLoaded', () => {
       });
 
       // show current as well
-      console.log('Making weather fetch request to:', `/weather?cities=${encodeURIComponent(city)}`);
       const cRes = await fetch(`/weather?cities=${encodeURIComponent(city)}`);
-      console.log('Weather response status:', cRes.status);
       const cjson = await cRes.json();
-      console.log('Weather response data:', cjson);
       
       if (Array.isArray(cjson) && cjson.length > 0) {
         const result = cjson[0];
