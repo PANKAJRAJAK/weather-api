@@ -147,7 +147,25 @@ app.get("/weather", async (req, res) => {
           }
 
           const weatherUrl = `https://api.openweathermap.org/data/2.5/weather?lat=${geo.lat}&lon=${geo.lon}&appid=${API_KEY}&units=metric`;
-          const { data } = await axios.get(weatherUrl);              // Construct readable city label using geocoding result
+          const { data } = await axios.get(weatherUrl);
+
+          // Fetch AQI data
+          let aqi = null;
+          try {
+            const aqiUrl = `https://api.openweathermap.org/data/2.5/air_pollution?lat=${geo.lat}&lon=${geo.lon}&appid=${API_KEY}`;
+            const aqiResponse = await axios.get(aqiUrl);
+            if (aqiResponse.data && aqiResponse.data.list && aqiResponse.data.list.length > 0) {
+              const aqiData = aqiResponse.data.list[0];
+              aqi = {
+                index: aqiData.main.aqi,
+                components: aqiData.components
+              };
+            }
+          } catch (aqiErr) {
+            console.warn(`Failed to fetch AQI for ${cityQuery}:`, aqiErr.message);
+          }
+
+              // Construct readable city label using geocoding result
               const label = `${geo.name}${geo.state ? ', ' + geo.state : ''}${geo.country ? ', ' + geo.country : ''}`;
 
               return {
@@ -162,6 +180,7 @@ app.get("/weather", async (req, res) => {
                 timezone: formatTimezone(data.timezone),
                 local_time: getLocalTime(data.timezone),
                 weather: data.weather[0].description,
+                aqi: aqi
               };
             } catch (err) {
               return { city, error: "City not found or unable to fetch data", details: err.message };
@@ -269,6 +288,22 @@ app.get('/weather/coords', async (req, res) => {
     const weatherUrl = `https://api.openweathermap.org/data/2.5/weather?lat=${encodeURIComponent(lat)}&lon=${encodeURIComponent(lon)}&appid=${API_KEY}&units=metric`;
     const { data } = await axios.get(weatherUrl);
 
+    // Fetch AQI data
+    let aqi = null;
+    try {
+      const aqiUrl = `https://api.openweathermap.org/data/2.5/air_pollution?lat=${encodeURIComponent(lat)}&lon=${encodeURIComponent(lon)}&appid=${API_KEY}`;
+      const aqiResponse = await axios.get(aqiUrl);
+      if (aqiResponse.data && aqiResponse.data.list && aqiResponse.data.list.length > 0) {
+        const aqiData = aqiResponse.data.list[0];
+        aqi = {
+          index: aqiData.main.aqi,
+          components: aqiData.components
+        };
+      }
+    } catch (aqiErr) {
+      console.warn(`Failed to fetch AQI for coords ${lat},${lon}:`, aqiErr.message);
+    }
+
     // Build a readable label (use name if available)
     const label = `${data.name || ''}${data.sys?.country ? ', ' + data.sys.country : ''}`.trim();
 
@@ -282,7 +317,8 @@ app.get('/weather/coords', async (req, res) => {
       sunset: convertUnixToTime(data.sys.sunset, data.timezone),
       timezone: formatTimezone(data.timezone),
       local_time: getLocalTime(data.timezone),
-      weather: data.weather[0].description
+      weather: data.weather[0].description,
+      aqi: aqi
     };
 
     // Keep response shape consistent with /weather (array of results)
