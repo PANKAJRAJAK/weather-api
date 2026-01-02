@@ -99,6 +99,26 @@ function convertUnixToTime(unix, timezoneOffset) {
   return `${displayHours}:${displayMinutes} ${ampm}`;
 }
 
+// Calculate AQI from PM2.5 concentration
+function calculatePM25AQI(pm25) {
+  const breakpoints = [
+    {c_low: 0, c_high: 12, aqi_low: 0, aqi_high: 50},
+    {c_low: 12.1, c_high: 35.4, aqi_low: 51, aqi_high: 100},
+    {c_low: 35.5, c_high: 55.4, aqi_low: 101, aqi_high: 150},
+    {c_low: 55.5, c_high: 150.4, aqi_low: 151, aqi_high: 200},
+    {c_low: 150.5, c_high: 250.4, aqi_low: 201, aqi_high: 300},
+    {c_low: 250.5, c_high: 350.4, aqi_low: 301, aqi_high: 400},
+    {c_low: 350.5, c_high: 500.4, aqi_low: 401, aqi_high: 500}
+  ];
+
+  for (let bp of breakpoints) {
+    if (pm25 >= bp.c_low && pm25 <= bp.c_high) {
+      return Math.round(((bp.aqi_high - bp.aqi_low) / (bp.c_high - bp.c_low)) * (pm25 - bp.c_low) + bp.aqi_low);
+    }
+  }
+  return pm25 > 500.4 ? 500 : 0;
+}
+
 // Format timezone offset seconds → GMT+HH:MM
 function formatTimezone(offsetSeconds) {
   const sign = offsetSeconds >= 0 ? "+" : "-";
@@ -156,8 +176,9 @@ app.get("/weather", async (req, res) => {
             const aqiResponse = await axios.get(aqiUrl);
             if (aqiResponse.data && aqiResponse.data.list && aqiResponse.data.list.length > 0) {
               const aqiData = aqiResponse.data.list[0];
+              const aqiValue = calculatePM25AQI(aqiData.components.pm2_5);
               aqi = {
-                index: aqiData.main.aqi,
+                value: aqiValue,
                 components: aqiData.components
               };
             }
@@ -295,8 +316,9 @@ app.get('/weather/coords', async (req, res) => {
       const aqiResponse = await axios.get(aqiUrl);
       if (aqiResponse.data && aqiResponse.data.list && aqiResponse.data.list.length > 0) {
         const aqiData = aqiResponse.data.list[0];
+        const aqiValue = calculatePM25AQI(aqiData.components.pm2_5);
         aqi = {
-          index: aqiData.main.aqi,
+          value: aqiValue,
           components: aqiData.components
         };
       }

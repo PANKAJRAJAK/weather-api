@@ -12,9 +12,12 @@ document.addEventListener('DOMContentLoaded', () => {
   const body = document.body;
   const cloudExtra = document.querySelector('.cloud-extra');
 
-  function getAqiLabel(index) {
-    const labels = { 1: 'Good', 2: 'Fair', 3: 'Moderate', 4: 'Poor', 5: 'Very Poor' };
-    return labels[index] || 'Unknown';
+  function getAqiLabel(aqiValue) {
+    if (aqiValue <= 50) return 'Good';
+    if (aqiValue <= 100) return 'Fair';
+    if (aqiValue <= 200) return 'Moderate';
+    if (aqiValue <= 300) return 'Poor';
+    return 'Very Poor';
   }
 
   function setWeatherBackground(temperature) {
@@ -98,7 +101,7 @@ document.addEventListener('DOMContentLoaded', () => {
             <div class="font-medium">${result.city}</div>
             <div class="text-sm">Temp: ${result.temperature}°C (feels like ${result.feels_like}°C)</div>
             <div class="text-sm text-slate-600">Humidity: ${result.humidity}%</div>
-            <div class="text-sm text-slate-600">AQI: ${result.aqi ? getAqiLabel(result.aqi.index) + ' ' + Math.round(result.aqi.components.pm2_5) : 'N/A'}</div>
+            <div class="text-sm text-slate-600">AQI: ${result.aqi ? getAqiLabel(result.aqi.value) + ' ' + result.aqi.value : 'N/A'}</div>
           </div>
           <div class="text-right">
             <div class="font-semibold">${result.wind_speed ?? 'N/A'}</div>
@@ -168,7 +171,7 @@ document.addEventListener('DOMContentLoaded', () => {
             <div class="font-medium">${cur.city}</div>
             <div class="text-sm">Temp: ${cur.temperature}°C (feels like ${cur.feels_like}°C)</div>
             <div class="text-sm text-slate-600">Humidity: ${cur.humidity}%</div>
-            <div class="text-sm text-slate-600">AQI: ${cur.aqi ? getAqiLabel(cur.aqi.index) + ' ' + Math.round(cur.aqi.components.pm2_5) : 'N/A'}</div>
+            <div class="text-sm text-slate-600">AQI: ${cur.aqi ? getAqiLabel(cur.aqi.value) + ' ' + cur.aqi.value : 'N/A'}</div>
           </div>
           <div class="text-right">
             <div class="font-semibold">${cur.wind_speed ?? 'N/A'}</div>
