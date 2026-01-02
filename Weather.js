@@ -208,7 +208,6 @@ app.get("/weather", async (req, res) => {
                 weather: data.weather[0].description,
                 aqi: aqi
               };
-              console.log(`Final result for ${cityQuery}:`, JSON.stringify(result));
               return result;
             } catch (err) {
               return { city, error: "City not found or unable to fetch data", details: err.message };
@@ -354,8 +353,6 @@ app.get('/weather/coords', async (req, res) => {
       weather: data.weather[0].description,
       aqi: aqi
     };
-
-    console.log(`Final result for coords ${lat},${lon}:`, JSON.stringify(result));
 
     // Keep response shape consistent with /weather (array of results)
     const payload = [result];
