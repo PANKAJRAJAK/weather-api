@@ -173,17 +173,22 @@ app.get("/weather", async (req, res) => {
           let aqi = null;
           try {
             const aqiUrl = `https://api.openweathermap.org/data/2.5/air_pollution?lat=${geo.lat}&lon=${geo.lon}&appid=${API_KEY}`;
+            console.log(`Fetching AQI for ${cityQuery}: ${aqiUrl}`);
             const aqiResponse = await axios.get(aqiUrl);
+            console.log(`AQI response status: ${aqiResponse.status}`);
             if (aqiResponse.data && aqiResponse.data.list && aqiResponse.data.list.length > 0) {
               const aqiData = aqiResponse.data.list[0];
               const aqiValue = calculatePM25AQI(aqiData.components.pm2_5);
+              console.log(`AQI calculated: ${aqiValue} for PM2.5: ${aqiData.components.pm2_5}`);
               aqi = {
                 value: aqiValue,
                 components: aqiData.components
               };
+            } else {
+              console.warn(`AQI API returned no data for ${cityQuery}`);
             }
           } catch (aqiErr) {
-            console.warn(`Failed to fetch AQI for ${cityQuery}:`, aqiErr.message);
+            console.error(`Failed to fetch AQI for ${cityQuery}:`, aqiErr.message, aqiErr.response?.status, aqiErr.response?.data);
           }
 
               // Construct readable city label using geocoding result
@@ -313,17 +318,22 @@ app.get('/weather/coords', async (req, res) => {
     let aqi = null;
     try {
       const aqiUrl = `https://api.openweathermap.org/data/2.5/air_pollution?lat=${encodeURIComponent(lat)}&lon=${encodeURIComponent(lon)}&appid=${API_KEY}`;
+      console.log(`Fetching AQI for coords ${lat},${lon}: ${aqiUrl}`);
       const aqiResponse = await axios.get(aqiUrl);
+      console.log(`AQI response status: ${aqiResponse.status}`);
       if (aqiResponse.data && aqiResponse.data.list && aqiResponse.data.list.length > 0) {
         const aqiData = aqiResponse.data.list[0];
         const aqiValue = calculatePM25AQI(aqiData.components.pm2_5);
+        console.log(`AQI calculated: ${aqiValue} for PM2.5: ${aqiData.components.pm2_5}`);
         aqi = {
           value: aqiValue,
           components: aqiData.components
         };
+      } else {
+        console.warn(`AQI API returned no data for coords ${lat},${lon}`);
       }
     } catch (aqiErr) {
-      console.warn(`Failed to fetch AQI for coords ${lat},${lon}:`, aqiErr.message);
+      console.error(`Failed to fetch AQI for coords ${lat},${lon}:`, aqiErr.message, aqiErr.response?.status, aqiErr.response?.data);
     }
 
     // Build a readable label (use name if available)
